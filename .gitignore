@@ -1,0 +1,25 @@
+# Python кэш
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.env/
+.venv/
+pip-log.txt
+pip-delete-this-check.txt
+
+# Среды разработки
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Переменные окружения и серкреты
+.env
+
+# Локальные БД
+*.db
+*.sqlite3

@@ -1,0 +1,24 @@
+# Игнорируем виртуальное окружение
+venv/
+.venv/
+env/
+
+# Игнорируем кэш Python
+**/__pycache__
+**/*.pyc
+
+# Игнорируем настройки редакторов кода
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# Игнорируем логи и локальные данные
+*.log
+postgres_data/
+redis_data/
+.git
+.gitignore
