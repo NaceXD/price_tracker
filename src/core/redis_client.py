@@ -1,5 +1,6 @@
 import redis.asyncio as aioredis
 from src.core.config import settings
+from src.core.logger import logger
 
 
 class RedisClient:
@@ -11,10 +12,12 @@ class RedisClient:
             f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}",
             decode_responses=True,
         )
+        logger.info("Успешное подключение к Redis")
 
     async def disconnect(self):
         if self.client:
             await self.client.close()
+            logger.info("Соединение с Redis закрыто")
 
     async def set_cache(self, key: str, value: str, expire: int = 1800):
         if self.client:
@@ -24,5 +27,6 @@ class RedisClient:
         if self.client:
             return await self.client.get(key)
         return None
+
 
 redis_manager = RedisClient()
