@@ -8,3 +8,4 @@ redis==8.1.0
 pydantic[email]
 alembic==1.20.0
 greenlet==3.5.6
+python-multipart==0.0.32
