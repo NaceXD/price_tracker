@@ -1,5 +1,5 @@
 import secrets
-
+from fastapi.security import OAuth2PasswordRequestForm
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.schemas.user import UserCreate, UserResponse, TokenResponse
@@ -23,13 +23,23 @@ async def register_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
     return new_user
 
 
-@router.post("/login", response_model=TokenResponse, status_code=status.HTTP_200_OK)
-async def log_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
-    logger.info(f"Попытка авторизации пользователя с email: {user.email}")
-    db_user = await authenticate_user(db, user)
-    if db_user is None:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Неверный email или пароль")
-    logger.info("Генерируем случайный токен")
+@router.post("/login", response_model=TokenResponse)
+async def log_user(
+        form_data: OAuth2PasswordRequestForm = Depends(),
+        db: AsyncSession = Depends(get_db)
+):
+    logger.info(f"OAuth2 авторизация для: {form_data.username}")
+
+    user_schema = UserCreate(email=form_data.username, password=form_data.password)
+
+    db_user = await authenticate_user(db, user_schema)
+    if not db_user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Неверный email или пароль"
+        )
+
     token = secrets.token_hex(32)
     await redis_manager.set_cache(key=token, value=str(db_user.id), expire=7200)
+
     return {"access_token": token, "token_type": "bearer"}
