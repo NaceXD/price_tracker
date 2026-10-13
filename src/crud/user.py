@@ -29,3 +29,21 @@ async def get_user_by_email(db: AsyncSession, email: str) -> User | None:
     result = await db.execute(query)
     user = result.scalar_one_or_none()
     return user
+
+
+async def authenticate_user(db: AsyncSession, user_schema: UserCreate) -> User | None:
+    logger.info(f"Начало аутентификации для пользователя: {user_schema.email}")
+    user = await get_user_by_email(db, user_schema.email)
+
+    if not user:
+        logger.warning(f"Аутентификация провалена: пользователь {user_schema.email} не найден")
+        return None
+
+    hashed_password = hashlib.sha256(user_schema.password.encode()).hexdigest()
+    if hashed_password != user.hashed_password:
+        logger.warning(f"Аутентификация провалена: неверный пароль для пользователя {user_schema.email}")
+        return None
+
+    logger.info(f"Пользователь {user_schema.email} успешно прошел аутентификацию")
+    return user
+
