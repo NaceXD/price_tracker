@@ -1,4 +1,5 @@
 import hashlib
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.models import User, Profile
 from src.schemas.user import UserCreate
@@ -21,3 +22,10 @@ async def create_user(db: AsyncSession, user_schema: UserCreate) -> User:
     await db.commit()
     await db.refresh(new_user)
     return new_user
+
+
+async def get_user_by_email(db: AsyncSession, email: str) -> User | None:
+    query = select(User).where(User.email == email)
+    result = await db.execute(query)
+    user = result.scalar_one_or_none()
+    return user
