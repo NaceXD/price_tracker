@@ -47,3 +47,9 @@ async def authenticate_user(db: AsyncSession, user_schema: UserCreate) -> User |
     logger.info(f"Пользователь {user_schema.email} успешно прошел аутентификацию")
     return user
 
+
+async def get_user_by_id(db: AsyncSession, user_id: int) -> User | None:
+    query = select(User).where(User.id == user_id)
+    result = await db.execute(query)
+    user = result.scalar_one_or_none()
+    return user
