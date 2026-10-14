@@ -17,7 +17,7 @@ services:
   celery_worker:
     build: .
     container_name: price_tracker_worker
-    command: celery -A src.core.celery_app worker --loglevel=info
+    command: watchmedo auto-restart --directory=./src --pattern="*.py" --recursive -- celery -A src.core.celery_app worker --loglevel=info
     volumes:
       - .:/app
     environment:
