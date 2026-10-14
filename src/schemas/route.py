@@ -13,3 +13,10 @@ class RouteResponse(BaseModel):
     departure_date: datetime
 
     model_config = {"from_attributes": True}
+
+class PriceHistoryResponse(BaseModel):
+    id: int
+    price: int
+    checked_at: datetime
+
+    model_config = {"from_attributes": True}
