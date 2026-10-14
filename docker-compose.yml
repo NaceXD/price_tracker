@@ -28,6 +28,20 @@ services:
       - redis_cache
     networks:
       - tracker_network
+  celery_beat:
+    build: .
+    container_name: price_tracker_beat
+    command: celery -A src.core.celery_app beat --loglevel=info
+    volumes:
+      - .:/app
+    environment:
+      - POSTGRES_HOST=postgres_db
+      - REDIS_HOST=redis_cache
+    depends_on:
+      - postgres_db
+      - redis_cache
+    networks:
+      - tracker_network
   postgres_db:
     image: postgres:16-alpine
     restart: always
