@@ -10,6 +10,8 @@ class Settings(BaseSettings):
     REDIS_HOST: str
     REDIS_PORT: int = 6379
     TRAVELPAYOUTS_TOKEN: str
+    DOCS_USERNAME: str
+    DOCS_PASSWORD: str
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
