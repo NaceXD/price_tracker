@@ -1,10 +1,12 @@
+from typing import Sequence
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from src.models import TrackedRoute, User
-from src.schemas.route import RouteCreate, RouteResponse
+from src.models import TrackedRoute, User, PriceHistory
+from src.schemas.route import RouteCreate
 from src.core.logger import logger
+
 
 async def join_or_create_router(db: AsyncSession, route_schema: RouteCreate, current_user: User) -> TrackedRoute:
     query = select(TrackedRoute).where(
@@ -33,3 +35,10 @@ async def join_or_create_router(db: AsyncSession, route_schema: RouteCreate, cur
     await db.refresh(route)
     logger.info(f"Маршрут с ID {route.id} успешно сохранен/обновлен в БД")
     return route
+
+
+async def get_route_price_history(db: AsyncSession, route_id: int) -> Sequence[PriceHistory]:
+    query = select(PriceHistory).where(PriceHistory.route_id == route_id).order_by(PriceHistory.checked_at.asc())
+    result = await db.execute(query)
+
+    return result.scalars().all()
