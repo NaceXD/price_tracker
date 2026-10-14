@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     DB_PORT: int = 5432
     REDIS_HOST: str
     REDIS_PORT: int = 6379
+    TRAVELPAYOUTS_TOKEN: str
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
