@@ -7,6 +7,8 @@ from src.crud.user import create_user, get_user_by_email, authenticate_user
 from src.core.database import get_db
 from src.core.logger import logger
 from src.core.redis_client import redis_manager
+from src.routers.deps import get_current_user
+from src.models import User
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
 
@@ -43,3 +45,7 @@ async def log_user(
     await redis_manager.set_cache(key=token, value=str(db_user.id), expire=7200)
 
     return {"access_token": token, "token_type": "bearer"}
+
+@router.get("/users/me", response_model=UserResponse)
+async def get_me(current_user: User = Depends(get_current_user)):
+    return current_user
