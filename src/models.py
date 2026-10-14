@@ -50,7 +50,7 @@ class TrackedRoute(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     origin: Mapped[str] = mapped_column(String(10), nullable=False)
     destination: Mapped[str] = mapped_column(String(10), nullable=False)
-    departure_data: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    departure_date: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
 
     users: Mapped[list["User"]] = relationship(
         "User",
