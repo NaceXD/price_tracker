@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status, Request
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -33,3 +33,12 @@ async def get_current_user(
         )
 
     return user
+
+async def ip_rate_limiter(request: Request):
+    ip_address = request.headers.get("X-Forwarded-For") or request.client.host
+    redis_key = f"rate:ip:{ip_address}"
+    count = await redis_manager.incr(key=redis_key, expire=60)
+    if count > 10:
+        logger.warning(f"Слишком много запрос от пользователя с ip: {ip_address}")
+        raise HTTPException(status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail="Слишком много запросов")
+    

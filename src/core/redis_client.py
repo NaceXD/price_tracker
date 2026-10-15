@@ -28,5 +28,17 @@ class RedisClient:
             return await self.client.get(key)
         return None
 
+    async def incr(self, key: str, expire: int = 60) -> int:
+        if self.client:
+            async with self.client.pipeline(transaction=True) as pipe:
+                pipe.incr(key)
+                pipe.expire(key, expire, nx=True)
+                result = await pipe.execute()
+            return result[0]
+        return 0
+
+    async def delete_key(self, key: str) -> None:
+        if self.client:
+            await self.client.delete(key)
 
 redis_manager = RedisClient()
