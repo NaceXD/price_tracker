@@ -16,7 +16,7 @@ class RedisClient:
 
     async def disconnect(self):
         if self.client:
-            await self.client.close()
+            await self.client.aclose()
             logger.info("Соединение с Redis закрыто")
 
     async def set_cache(self, key: str, value: str, expire: int = 1800):
