@@ -6,7 +6,7 @@
 
 *   **Backend:** Python 3.14+ / FastAPI / Pydantic v2
 *   **Database & ORM:** PostgreSQL 16 / SQLAlchemy 2.0 (Async) / Alembic
-*   **Task Queue:** Celery / Celery Beat / Redis 7
+*   **Task Queue:** Celery / Celery Beat / Redis 8
 *   **Infrastructure & Testing:** Docker & Docker Compose / Pytest (Asyncio)
 
 ---
